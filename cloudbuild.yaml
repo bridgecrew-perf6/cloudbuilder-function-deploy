@@ -1,0 +1,8 @@
+---
+steps:
+  # Build an image.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/cloudbuilder-function-deploy', '.']
+  # Push the image.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'eu.gcr.io/$PROJECT_ID/cloudbuilder-function-deploy']
