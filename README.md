@@ -1,8 +1,11 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/vwt-digital/cloudbuilder-function-deploy/badge)](https://www.codefactor.io/repository/github/vwt-digital/cloudbuilder-function-deploy)
+
 # Combined deploy of function and invoker role
 
 This cloudbuilder simplifies the deployment of a cloud function together with applying an invoker role for the function.
 
 The cloudbuilder image can be used in the cloudbuild.yaml
+
 `- name: 'eu.gcr.io/{cloudbuilders}/cloudbuilder-function-deploy'`
 
 The syntax for the function deploy script is identical to the syntax of the standard `gcloud function deploy` command except for the `--invoker` parameter. 
