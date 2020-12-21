@@ -12,31 +12,37 @@ args = parser.parse_known_args()
 
 # Default function deploy params
 FUNCTION_PARAMS = {
-    "region": "europe-west1",
-    "runtime": "python37"
+    "region": "europe-west1"
 }
 
 
 def deploy_function(args, deploy_params):
     # Compose function deploy command
-    deploy_cmd = 'gcloud functions deploy {}'.format(args[0].name)
+    deploy_cmd = (['gcloud', 'functions', 'deploy', '{}'.format(args[0].name)])
 
     # Append cmommand line params
     for arg in vars(args[0]):
         if arg not in ['invoker', 'name']:
-            deploy_cmd += ' --{}'.format(arg)
-            deploy_cmd += '={}'.format(getattr(args[0], arg))
+            deploy_cmd.append('--{}={}'.format(arg, getattr(args[0], arg)))
 
     for param in args[1]:
-        deploy_cmd += ' {}'.format(param)
+        deploy_cmd.append('{}'.format(param))
 
     # Append default params (only if not specified before)
-    for k in deploy_params:
-        if k not in deploy_cmd:
-            deploy_cmd += ' --{}={}'.format(k, deploy_params[k])
+    for key in deploy_params:
+        found = False
+        for param in deploy_cmd:
+            if key in param:
+                found = True
+
+        if not found:
+            cmd = '--{}'.format(key)
+            if deploy_params[key]:
+                cmd += '={}'.format(deploy_params[key])
+            deploy_cmd.append(cmd)
 
     print(deploy_cmd)
-    retval = subprocess.run(deploy_cmd, shell=True, stderr=subprocess.PIPE, timeout=180)  # nosec
+    retval = subprocess.run(deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180)  # nosec
     print(retval)
     return retval.returncode
 
@@ -52,15 +58,18 @@ def deploy_invoker_iam(invokers, region):
     with open('iam_file.json', "w") as iam_file:
         iam_file.write(invoker)
 
-    auth_cmd = 'gcloud functions set-iam-policy {}'.format(args[0].name)
-    auth_cmd += ' --project={}'.format(args[0].project)
-    auth_cmd += ' --region={}'.format(region)
-    auth_cmd += ' iam_file.json'
+    auth_cmd = (['gcloud',
+                 'functions',
+                 'set-iam-policy',
+                 '{}'.format(args[0].name),
+                 '--project={}'.format(args[0].project),
+                 '--region={}'.format(region),
+                 'iam_file.json'])
 
     print(auth_cmd)
     print(invoker)
 
-    retval = subprocess.run(auth_cmd, shell=True, stderr=subprocess.PIPE, timeout=180)  # nosec
+    retval = subprocess.run(auth_cmd, shell=False, stderr=subprocess.PIPE, timeout=180)  # nosec
     print(retval)
     return(retval.returncode)
 
@@ -82,7 +91,7 @@ def get_function_params(func_parms):
 
 
 def get_region(args, function_params):
-    print('REGION')
+
     if function_params['region']:
         region = function_params['region']
 
@@ -98,8 +107,8 @@ def main():
 
     # Deploy function
     retval = deploy_function(args, function_params)
-    if retval:
-        return retval
+#    if retval:
+#        return retval
 
     # Create invoker IAM (if specified)
     if args[0].invoker:
