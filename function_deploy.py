@@ -107,8 +107,8 @@ def main():
 
     # Deploy function
     retval = deploy_function(args, function_params)
-#    if retval:
-#        return retval
+    if retval:
+        return retval
 
     # Create invoker IAM (if specified)
     if args[0].invoker:
