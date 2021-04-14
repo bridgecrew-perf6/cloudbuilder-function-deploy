@@ -22,7 +22,6 @@ FUNCTION_PARAMS = {
     "max-instances": 1,
     "memory": "128MB",
     "region": "europe-west1",
-    "security-level": "secure-always",
 }
 
 
@@ -30,13 +29,17 @@ def deploy_function(args, deploy_params):
     # Compose function deploy command
     deploy_cmd = ["gcloud", "functions", "deploy", "{}".format(args[0].name)]
 
-    # Append cmommand line params
+    # Append command line params
     for arg in vars(args[0]):
         if arg not in ["invoker", "name"]:
             deploy_cmd.append("--{}={}".format(arg, getattr(args[0], arg)))
 
     for param in args[1]:
         deploy_cmd.append("{}".format(param))
+
+    # Add security level if HTTP trigger
+    if "--trigger-http" in args[1]:
+        deploy_cmd.append("--security-level=secure-always")
 
     # Append default params (only if not specified before)
     for key in deploy_params:
@@ -52,11 +55,12 @@ def deploy_function(args, deploy_params):
             deploy_cmd.append(cmd)
 
     print(deploy_cmd)
-    retval = subprocess.run(
-        deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
-    )
-    print(retval)
-    return retval.returncode
+    # retval = subprocess.run(
+    #     deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
+    # )
+    # print(retval)
+    # return retval.returncode
+    return None
 
 
 def deploy_invoker_iam(invokers, region):
