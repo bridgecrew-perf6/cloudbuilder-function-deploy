@@ -21,7 +21,10 @@ When the `--invoker` tag is omitted appying of the invoker role is skipped.
 Deployment variables for the `gcloud function deploy` can be specified in 3 ways (in sequence of priority)
 1.  Command line parameters. Parameters specified on the `function-deploy.py` have the highest priority. These values override the values from option 2) and 3)
 2.  Additional values van be specified in a  `deploy.json` file in the same directory where the cloud function resides. These values override values specified at 3)
-3.  By default the command line option `--region=europe-west1` is added to the command line
+3.  By default, the following options are added to the command line:
+    - `--region=europe-west1`
+    - `--max-instances=1`
+    - `--security-level=secure-always`
 
 ## Example
 The example below shows a `cloudbuild.yaml` fragment

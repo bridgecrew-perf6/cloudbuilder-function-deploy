@@ -6,27 +6,36 @@ import subprocess  # nosec
 
 parser = argparse.ArgumentParser()
 parser.add_argument("name", type=str, help="function name")
-parser.add_argument("--project", type=str, help="the project where the function will be deployed", required=True)
-parser.add_argument("--invoker", type=str, help="invoker authorisation", action='append')
+parser.add_argument(
+    "--project",
+    type=str,
+    help="the project where the function will be deployed",
+    required=True,
+)
+parser.add_argument(
+    "--invoker", type=str, help="invoker authorisation", action="append"
+)
 args = parser.parse_known_args()
 
 # Default function deploy params
 FUNCTION_PARAMS = {
-    "region": "europe-west1"
+    "region": "europe-west1",
+    "max-instances": 1,
+    "security-level": "secure-always",
 }
 
 
 def deploy_function(args, deploy_params):
     # Compose function deploy command
-    deploy_cmd = (['gcloud', 'functions', 'deploy', '{}'.format(args[0].name)])
+    deploy_cmd = ["gcloud", "functions", "deploy", "{}".format(args[0].name)]
 
     # Append cmommand line params
     for arg in vars(args[0]):
-        if arg not in ['invoker', 'name']:
-            deploy_cmd.append('--{}={}'.format(arg, getattr(args[0], arg)))
+        if arg not in ["invoker", "name"]:
+            deploy_cmd.append("--{}={}".format(arg, getattr(args[0], arg)))
 
     for param in args[1]:
-        deploy_cmd.append('{}'.format(param))
+        deploy_cmd.append("{}".format(param))
 
     # Append default params (only if not specified before)
     for key in deploy_params:
@@ -36,13 +45,15 @@ def deploy_function(args, deploy_params):
                 found = True
 
         if not found:
-            cmd = '--{}'.format(key)
+            cmd = "--{}".format(key)
             if deploy_params[key]:
-                cmd += '={}'.format(deploy_params[key])
+                cmd += "={}".format(deploy_params[key])
             deploy_cmd.append(cmd)
 
     print(deploy_cmd)
-    retval = subprocess.run(deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180)  # nosec
+    retval = subprocess.run(
+        deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
+    )
     print(retval)
     return retval.returncode
 
@@ -53,25 +64,29 @@ def deploy_invoker_iam(invokers, region):
     invoker += '"{}"'.format(invokers[0])
     for user in invokers[1:]:
         invoker += ', "{}"'.format(user)
-    invoker += ']} ]}'
+    invoker += "]} ]}"
 
-    with open('iam_file.json', "w") as iam_file:
+    with open("iam_file.json", "w") as iam_file:
         iam_file.write(invoker)
 
-    auth_cmd = (['gcloud',
-                 'functions',
-                 'set-iam-policy',
-                 '{}'.format(args[0].name),
-                 '--project={}'.format(args[0].project),
-                 '--region={}'.format(region),
-                 'iam_file.json'])
+    auth_cmd = [
+        "gcloud",
+        "functions",
+        "set-iam-policy",
+        "{}".format(args[0].name),
+        "--project={}".format(args[0].project),
+        "--region={}".format(region),
+        "iam_file.json",
+    ]
 
     print(auth_cmd)
     print(invoker)
 
-    retval = subprocess.run(auth_cmd, shell=False, stderr=subprocess.PIPE, timeout=180)  # nosec
+    retval = subprocess.run(
+        auth_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
+    )
     print(retval)
-    return(retval.returncode)
+    return retval.returncode
 
 
 def get_function_params(func_parms):
@@ -79,7 +94,7 @@ def get_function_params(func_parms):
 
     function_params = func_parms
     try:
-        with open('deploy.json') as deploy_file:
+        with open("deploy.json") as deploy_file:
             deploy_config = json.load(deploy_file)
 
             for k in deploy_config:
@@ -92,12 +107,12 @@ def get_function_params(func_parms):
 
 def get_region(args, function_params):
 
-    if function_params['region']:
-        region = function_params['region']
+    if function_params["region"]:
+        region = function_params["region"]
 
     for param in args[1]:
-        if 'region' in param:
-            region = param.partition('=')[2]
+        if "region" in param:
+            region = param.partition("=")[2]
 
     return region
 
