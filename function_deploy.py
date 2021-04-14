@@ -19,8 +19,9 @@ args = parser.parse_known_args()
 
 # Default function deploy params
 FUNCTION_PARAMS = {
-    "region": "europe-west1",
     "max-instances": 1,
+    "memory": "128MB",
+    "region": "europe-west1",
     "security-level": "secure-always",
 }
 
