@@ -25,7 +25,7 @@ Deployment variables for the `gcloud function deploy` can be specified in 3 ways
     - `--max-instances=1`
     - `--memory=128MB`
     - `--region=europe-west1`
-    - `--security-level=secure-always`
+    - `--security-level=secure-always` (if `--trigger-http` is defined)
 
 ## Example
 The example below shows a `cloudbuild.yaml` fragment
