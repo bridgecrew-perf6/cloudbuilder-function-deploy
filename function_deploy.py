@@ -56,7 +56,7 @@ def deploy_function(args, deploy_params):
 
     print(deploy_cmd)
     retval = subprocess.run(
-        deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
+        deploy_cmd, shell=False, stderr=subprocess.PIPE, timeout=300  # nosec
     )
     print(retval)
     return retval.returncode
@@ -87,7 +87,7 @@ def deploy_invoker_iam(invokers, region):
     print(invoker)
 
     retval = subprocess.run(
-        auth_cmd, shell=False, stderr=subprocess.PIPE, timeout=180  # nosec
+        auth_cmd, shell=False, stderr=subprocess.PIPE, timeout=300  # nosec
     )
     print(retval)
     return retval.returncode
