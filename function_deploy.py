@@ -69,13 +69,14 @@ def deploy_invoker_iam(invokers, region):
         for user in invoker.split(","):
             invoker_list.append(user)
 
-    invoker = (
-        '{"bindings":[{"role":"roles/cloudfunctions.invoker", "members": %s} ]}"'
-        % str(invoker_list)
-    )
+    invoker = {
+        "bindings": [
+            {"role": "roles/cloudfunctions.invoker", "members": list(set(invoker_list))}
+        ]
+    }
 
     with open("iam_file.json", "w") as iam_file:
-        iam_file.write(invoker)
+        iam_file.write(json.dumps(invoker))
 
     auth_cmd = [
         "gcloud",
