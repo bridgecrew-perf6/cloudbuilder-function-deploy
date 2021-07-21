@@ -63,12 +63,16 @@ def deploy_function(args, deploy_params):
 
 
 def deploy_invoker_iam(invokers, region):
+    invoker_list = []
 
-    invoker = '{"bindings":[{"role":"roles/cloudfunctions.invoker", "members": ['
-    invoker += '"{}"'.format(invokers[0])
-    for user in invokers[1:]:
-        invoker += ', "{}"'.format(user)
-    invoker += "]} ]}"
+    for invoker in invokers:
+        for user in invoker.split(","):
+            invoker_list.append(user)
+
+    invoker = (
+        '{"bindings":[{"role":"roles/cloudfunctions.invoker", "members": %s} ]}"'
+        % str(invoker_list)
+    )
 
     with open("iam_file.json", "w") as iam_file:
         iam_file.write(invoker)
