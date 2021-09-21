@@ -220,7 +220,8 @@ Let's do it:
       import_common.py \
       --remote-uri https://example.com/me/my_repository.git \
       --branch develop \
-      --common-path ../uncommon
+      --common-path ../uncommon \
+      --common-package functions.uncommon
       
       import_common.py --remote-uri https://example.com/me/my_repository.git
       
