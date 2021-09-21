@@ -199,7 +199,9 @@ A `cloudbuilder.yaml` step to deploy 'some_cloud_function' might look something 
   args:
     - '-c'
     - |
-      import_common.py --remote-uri https://example.com/me/my_repository.git
+      import_common.py \
+      --remote-uri https://example.com/me/my_repository.git \
+      --common-path functions/common
       
       function_deploy.py ${PROJECT_ID}-some-cloud-function
   dir: 'my_repository/functions/some_cloud_function'
