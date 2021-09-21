@@ -222,10 +222,12 @@ Let's do it:
       import_common.py \
       --remote-uri https://example.com/me/my_repository.git \
       --branch develop \
-      --common-path ../uncommon \
+      --common-path functions/uncommon \
       --common-package functions.uncommon
       
-      import_common.py --remote-uri https://example.com/me/my_repository.git
+      import_common.py \
+      --remote-uri https://example.com/me/my_repository.git \
+      --common-path functions/common
       
       function_deploy.py ${PROJECT_ID}-some-cloud-function
   dir: 'my_repository/functions/some_cloud_function'
