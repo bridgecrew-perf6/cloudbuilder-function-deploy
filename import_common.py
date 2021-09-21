@@ -48,7 +48,7 @@ if not os.path.exists(arguments.function) or not os.path.isdir(arguments.functio
 
 if arguments.function_package:
     FUNCTION_PACKAGE = arguments.function_package
-elif arguments.common.name in arguments.common_package:
+elif arguments.common.resolve().name in arguments.common_package:
     FUNCTION_PACKAGE = arguments.common_package.replace(
         arguments.common.resolve().name,
         arguments.function.resolve().name
