@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import re
 from shutil import copytree, ignore_patterns
@@ -65,6 +67,18 @@ GIT_CLONE_HTTPS_REGEX = re.compile(r"^https://([^/]+)/([^/]+)/([^/]+).git$")
 
 
 def clone_remote(remote_uri: str, branch: str, remote_path: Path) -> Path:
+    """
+    Clones the remote to a path relative to the remote_path.
+
+    :param remote_uri: The URI of the remote.
+    :type remote_uri: str
+    :param branch: The branch of the remote.
+    :type branch: str
+    :param remote_path: The root path where remotes will be cloned to.
+    :type remote_path: Path
+    :return: The folder of the cloned remote.
+    :rtype: Path
+    """
     result = GIT_CLONE_HTTPS_REGEX.search(remote_uri)
     if result:
         repo_owner = result.group(2)
@@ -86,6 +100,18 @@ def clone_remote(remote_uri: str, branch: str, remote_path: Path) -> Path:
 
 
 def process_lines(lines: list[str], common_package, function_package) -> list[str]:
+    """
+    Processed the lines of the file by looking for imports of the common package.
+
+    :param lines: The lines of the Python file.
+    :type lines: list[str]
+    :param common_package: The package to be replaced.
+    :type common_package: str
+    :param function_package: The package to replace common_package with.
+    :type function_package: str
+    :return: The processed lines.
+    :rtype: list[str]
+    """
     for i, line in enumerate(lines):
         result = IMPORT_REGEX.search(line)
         if result:
@@ -96,7 +122,15 @@ def process_lines(lines: list[str], common_package, function_package) -> list[st
     return [line for line in lines if line]
 
 
-def main():
+def main() -> int:
+    """
+    This script will allow for easy import and reuse of code for the cloud.
+    It does this by copying, and processing all required files to the folder
+    that will be deployed to the cloud.
+
+    :return: Exit code.
+    :rtype: int
+    """
     function_path = arguments.function_path
     common_path = arguments.common_path
 

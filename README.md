@@ -234,7 +234,7 @@ Let's do it:
 
 ```
 If the `--remote-*` arguments sound complicated, you can just consider them pulling remote code to a folder, and
-then `--common-path` being changed to that folder.
+then `--common-path` being relative to that folder.
 
 ## Python Imports
 Now you might think: won't my function's imports be all wrong after the common folder's contents
